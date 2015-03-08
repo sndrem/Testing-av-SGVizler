@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello SGVizler</title>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js"></script>
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript" src="../sgvizler.js"></script>
+
+		<script type="text/javascript">
+	sgvizler.prefix('dbont', 'http://dbpedia.org/ontology/');
+    sgvizler.prefix('geo', 'http://www.w3.org/2003/01/geo/wgs84_pos#');
+    sgvizler.prefix('dct', 'http://purl.org/dc/terms/');
+    sgvizler.prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+    sgvizler.prefix('dbRes', 'http://dbpedia.org/resource/');
+    sgvizler.prefix('rdfs', 'http://www.w3.org/2000/01/rdf-schema#');
+    sgvizler.prefix('yago', 'http://dbpedia.org/class/yago/');
+    sgvizler.prefix('prop', 'http://dbpedia.org/property/');
+
+      
+	$(document).ready(function() { sgvizler.containerDrawAll(); });
+      </script>
+
+	</head>
+
+	<body>
+	
+	<h1>Dette er en sparql-test for SGVizler</h1>
+		<h4>Test 1: GeoChart</h4>
+			<p>Dette er en test for bruk av SGVizler med geoChart fra Google.Vizualisation.GeoChart. Kartet representerer folketall i ulike land i Europa. <br/>
+				Slik ser spørringen ut: <pre>SELECT ?label ?country ?population
+				WHERE { ?country a dbont:Country . 
+			        	?country a yago:EuropeanCountries . 
+			        	?country rdfs:label ?label . 
+			    	OPTIONAL{ ?country prop:populationCensus ?population . 	 
+				OPTIONAL {?country prop:frTotalPopulationEstimate ?population . }
+				OPTIONAL {?country dbont:populationTotal ?population . }
+				FILTER (lang(?label) = &#34;en&#34;) .}</pre>
+			</p>
+		<div id="geoChartTest" data-sgvizler-endpoint="http://dbpedia.org/sparql" data-sgvizler-query="
+				SELECT ?label ?country ?population
+				WHERE { ?country a dbont:Country . 
+		        ?country a yago:EuropeanCountries .  
+		    OPTIONAL{ ?country prop:populationCensus ?population . }
+		        ?country rdfs:label ?label . 
+			OPTIONAL {?country prop:frTotalPopulationEstimate ?population . }
+			OPTIONAL {?country dbont:populationTotal ?population . }
+			FILTER (lang(?label) = &#34;en&#34;) .}
+				"
+				data-sgvizler-chart="google.visualization.GeoChart" style="width: 800px; heigth 200px;" data-sgvizler-loglevel="2">
+		</div>
+	<hr>
+		<h4>Test 2: Tabell</h4>
+			<p>Dette er en test for Google.Visualization.Table <br/>
+			Tabellen viser land og valuta. <br/>
+			Slik ser spørringen ut: <pre>SELECT ?label ?currency 
+		WHERE {?country a dbont:Country ;
+		                prop:currencyCode ?currency ;
+		                rdfs:label ?label .
+		FILTER (lang(?label)=&#34;en&#34;) . }</pre>
+			</p>
+		<div id="tableTest" data-sgvizler-endpoint="http://dbpedia.org/sparql" data-sgvizler-query="
+		SELECT ?label ?currency 
+		WHERE {?country a dbont:Country ;
+		                prop:currencyCode ?currency ;
+		                rdfs:label ?label .
+		FILTER (lang(?label)=&#34;en&#34;) . }" data-sgvizler-chart="google.visualization.Table" style="width:1200px; height:400px;">
+		</div>
+	<hr>
+			<h4>Test 3: Kart</h4>
+			<p>Dette er en test for å populære et kart med data fra dbpedia. Kartet viser 100 land med folketall &gt; 200 000 <br/>
+			Slik ser spørringen ut. 
+			<pre>SELECT DISTINCT ?lat ?long ?label ?motto ?population
+WHERE {?country a dbont:Country ;
+                geo:lat ?lat ;
+                geo:long ?long ; 
+                rdfs:label ?label .
+OPTIONAL { ?country dbont:motto ?motto . }
+OPTIONAL {?country prop:populationCensus ?population . } 
+OPTIONAL {?country dbont:populationTotal ?population . }
+FILTER (?population > 200000) . 
+		FILTER (lang(?label)=&#34;en&#34;) . }
+LIMIT 100</pre>
+			</p>
+		<div id="kartEksempel" data-sgvizler-endpoint="http://dbpedia.org/sparql" data-sgvizler-query="
+		SELECT DISTINCT ?lat ?long ?label ?motto ?population
+		WHERE {?country a dbont:Country ;
+		                geo:lat ?lat ;
+		                geo:long ?long ; 
+		                rdfs:label ?label .
+		OPTIONAL {?country dbont:motto ?motto . }
+		OPTIONAL {?country prop:populationCensus ?population . } 
+		OPTIONAL {?country dbont:populationTotal ?population . }
+		FILTER (?population > 200000) . 
+				FILTER (lang(?label)=&#34;en&#34;) . }
+		LIMIT 100" data-sgvizler-chart="sgvizler.visualization.Map" data-sgvizler-loglevel="2" style="width:800px; height:800px;">
+		</div>
+	<hr>
+		<h4>Test 4: Gauges</h4>
+		<p>Test for å illustrere data med gauges <br/>
+		Dataene viser land i Europa med area rank mindre enn 100 <br/>
+		Spørringen ser slik ut: <pre>SELECT ?label ?areaRank
+WHERE {?country a dbont:Country ;
+                prop:areaRank ?areaRank ;
+                rdfs:label ?label ;
+                rdf:type yago:EuropeanCountries . 
+FILTER (?areaRank < 100) . 
+FILTER (lang(?label)=&#34;en&#34;) .}
+ORDER BY DESC (?areaRank)</pre>	
+		</p>
+	<div id="gaugeEksempel" data-sgvizler-endpoint="http://dbpedia.org/sparql" data-sgvizler-query="
+	SELECT ?label ?areaRank
+WHERE {?country a dbont:Country ;
+                prop:areaRank ?areaRank ;
+                rdfs:label ?label ;
+                rdf:type yago:EuropeanCountries . 
+FILTER (?areaRank < 100) . 
+FILTER (lang(?label)=&#34;en&#34;) .}
+ORDER BY DESC (?areaRank)"  data-sgvizler-chart="google.visualization.Gauge" data-sgvizler-loglevel="2" style="height:800px; width:800px;"></div>
+	
+	
+
+
+
+
+
+
+
+	</body>	
+</html>
