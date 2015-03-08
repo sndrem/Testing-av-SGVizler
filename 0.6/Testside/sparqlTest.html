@@ -38,7 +38,7 @@
 				FILTER (lang(?label) = &#34;en&#34;) .}</pre>
 			</p>
 		<div id="geoChartTest" data-sgvizler-endpoint="http://dbpedia.org/sparql" data-sgvizler-query="
-				SELECT ?label ?country ?population
+				SELECT ?label ?population
 				WHERE { ?country a dbont:Country . 
 		        ?country a yago:EuropeanCountries .  
 		    OPTIONAL{ ?country prop:populationCensus ?population . }
@@ -47,7 +47,8 @@
 			OPTIONAL {?country dbont:populationTotal ?population . }
 			FILTER (lang(?label) = &#34;en&#34;) .}
 				"
-				data-sgvizler-chart="google.visualization.GeoChart" style="width: 800px; heigth 200px;" data-sgvizler-loglevel="2">
+				data-sgvizler-chart="google.visualization.GeoChart" style="width: 800px; heigth 200px;" data-sgvizler-loglevel="2"
+				data-sgvizler-chart-options="region=150">
 		</div>
 	<hr>
 		<h4>Test 2: Tabell</h4>
