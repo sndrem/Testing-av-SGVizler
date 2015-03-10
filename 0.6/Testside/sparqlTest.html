@@ -16,6 +16,8 @@
     sgvizler.prefix('rdfs', 'http://www.w3.org/2000/01/rdf-schema#');
     sgvizler.prefix('yago', 'http://dbpedia.org/class/yago/');
     sgvizler.prefix('prop', 'http://dbpedia.org/property/');
+    sgvizler.prefix('hpi', 'http://happyPlanetOntology/ontology#');
+    sgvizler.prefix('hpi', 'http://happyPlanetOntology/ontology#');
 
       
 	$(document).ready(function() { sgvizler.containerDrawAll(); });
@@ -118,12 +120,37 @@ WHERE {?country a dbont:Country ;
 FILTER (?areaRank < 100) . 
 FILTER (lang(?label)=&#34;en&#34;) .}
 ORDER BY DESC (?areaRank)"  data-sgvizler-chart="google.visualization.Gauge" data-sgvizler-loglevel="2" style="height:800px; width:800px;"></div>
+
+<hr>
+		<h4>Test 2: Tabell med HPI Data</h4>
+			<p>Dette er en test for Google.Visualization.Table <br/>
+			</p>
+		<div id="tableTest2" data-sgvizler-endpoint="http://localhost:3030/ds/query" data-sgvizler-query="
+		select ?countryLabel ?hpi
+where {?country a hpi:country;
+                          rdfs:label ?countryLabel;
+                          hpi:happyIndex ?hpi .  }" 
+                          
+                         data-sgvizler-chart="google.visualization.GeoChart" style="width:1200px; height:400px;">
+		</div>
+
 	
-	
+<hr />
 
+<h4>Paitest he hehhhheh</h4>
 
-
-
+<div id="exPieChart" 
+   data-sgvizler-endpoint="http://localhost:3030/ds/query" 
+   data-sgvizler-query="
+   select ?countryLabel ?population
+where {?country a hpi:country;
+                          rdfs:label ?countryLabel;
+                          hpi:populationTotal ?population .  }
+                          ORDER BY DESC(?population)
+                          LIMIT 10" 
+   data-sgvizler-chart="google.visualization.PieChart"
+   
+   style="width:400px; height:265px; border:1px solid black;"></div>	
 
 
 
